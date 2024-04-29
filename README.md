@@ -18,7 +18,7 @@
   You just need to clone the project or download the code. No special configuration required.
   The database is a SQLite file with already Menu preloaded information. 
 
-### Arquitectural and Design Patterns
+### Architectural and Design Patterns
 
   - Clean Arquitecture
   - CQRS
