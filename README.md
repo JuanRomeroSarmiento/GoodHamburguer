@@ -20,7 +20,7 @@
 
 ### Architectural and Design Patterns
 
-  - Clean Arquitecture
+  - Clean Architecture
   - CQRS
   - Decorator Pattern
   - Repository
