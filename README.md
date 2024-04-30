@@ -16,7 +16,8 @@
 ### Setup
 
   You just need to clone the project or download the code. No special configuration required.
-  The database is a SQLite file with already Menu preloaded information. 
+  The database is a SQLite file with already Menu preloaded information. Just set Web.Api project
+  as the initial project ... 
 
 ### Architectural and Design Patterns
 
