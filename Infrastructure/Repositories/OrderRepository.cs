@@ -43,6 +43,14 @@ internal class OrderRepository(ApplicationWriteDbContext dbContext) : IOrderRepo
 
     public async Task UpdateAsync(Order order)
     {
+        var oldMenuItems = await dbContext.OrderMenuItems
+            .Where(omi => omi.OrderId == order.Id)
+            .ToListAsync();
+
+        dbContext.OrderMenuItems.RemoveRange(oldMenuItems);
+
+        dbContext.Update(order);
+
         await dbContext.SaveChangesAsync();
     }
 }

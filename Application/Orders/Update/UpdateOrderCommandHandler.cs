@@ -25,19 +25,19 @@ public class UpdateOrderCommandHandler(
         }
 
         order.ClientName = command.ClientName;
-        //order.OrderMenuItems = command.MenuItems
-        //        .Select(mi => 
-        //            new OrderMenuItem() 
-        //            {
-        //                OrderId = order.Id,
-        //                MenuItemId = mi.MenuItemId,
-        //                MenuItem = new MenuItem(mi.MenuItemId, mi.Name, mi.Price, mi.MenuCategoryId)
-        //            })
-        //        .ToList();
+        order.OrderMenuItems = command.MenuItems
+                .Select(mi =>
+                    new OrderMenuItem()
+                    {
+                        OrderId = order.Id,
+                        MenuItemId = mi.MenuItemId,
+                        MenuItem = new MenuItem(mi.MenuItemId, mi.Name, mi.Price, mi.MenuCategoryId)
+                    })
+                .ToList();
 
-        //order.GrossPrice = order.CalculateGrossPrice();
-        //Order withDiscountByItems = new WithDiscountByItemsDecorator(order);
-        //order.NetPrice = withDiscountByItems.CalculateNetPrice();
+        order.GrossPrice = order.CalculateGrossPrice();
+        Order withDiscountByItems = new WithDiscountByItemsDecorator(order);
+        order.NetPrice = withDiscountByItems.CalculateNetPrice();
 
         await orderRepository.UpdateAsync(order);
 
