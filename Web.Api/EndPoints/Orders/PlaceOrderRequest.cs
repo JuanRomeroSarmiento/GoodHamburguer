@@ -2,7 +2,7 @@
 
 namespace Web.Api.EndPoints.Orders;
 
-public sealed record OrderRequests(
+public sealed record PlaceOrderRequest(
     string? clientName, 
     IEnumerable<MenuItemRequest> menuItems);
 

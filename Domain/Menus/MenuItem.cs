@@ -21,5 +21,6 @@ public sealed class MenuItem : Entity
         Name = name;
         Price = price;
         MenuCategoryId = menuCategoryId;
+        OrderMenuItems = new List<OrderMenuItem>();
     }
 }

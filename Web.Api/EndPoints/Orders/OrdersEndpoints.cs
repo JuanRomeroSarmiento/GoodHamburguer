@@ -4,6 +4,7 @@ using Application.Orders.Remove;
 using Application.Orders.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Web.Api.Filters;
 
 namespace Web.Api.EndPoints.Orders;
 
@@ -14,8 +15,10 @@ public static class OrdersEndpoints
         var group = app.MapGroup("api/orders");
 
         group.MapGet("", GetOrders);
-        group.MapPost("", PlaceOrder);
-        group.MapPut("", UpdateOrder);
+        group.MapPost("", PlaceOrder)
+            .AddEndpointFilter<ValidationFilter<PlaceOrderRequest>>();
+        group.MapPut("", UpdateOrder)
+            .AddEndpointFilter<ValidationFilter<UpdateOrderRequest>>(); ;
         group.MapDelete("{id}", DeleteOrder);
     }
 
@@ -27,7 +30,7 @@ public static class OrdersEndpoints
     }
 
     public static async Task<IResult> PlaceOrder(
-        OrderRequests request,
+        PlaceOrderRequest request,
         ISender sender)
     {
         var command = new PlaceOrderCommand(
