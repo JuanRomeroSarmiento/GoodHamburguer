@@ -11,7 +11,8 @@
   - Sqlite 8.0.4
   - XUnit 2.4.2
   - FluentAssertions 6.12.0
-  - NetArchTest 1.3.2 
+  - NetArchTest 1.3.2
+  - FluentValidation 11.9.1 
 
 ### Setup
 
