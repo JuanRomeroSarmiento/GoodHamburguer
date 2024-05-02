@@ -26,6 +26,7 @@
   - CQRS
   - Decorator Pattern
   - Repository
+  - Result Pattern
 
 ### Tests
 
