@@ -1,8 +1,10 @@
 ﻿using Domain.Menus;
 using Domain.Orders;
+using Infrastructure.Caching;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +30,17 @@ public static class DependencyInjection
             options => options
                 .UseSqlite(configuration.GetConnectionString("GoodHamburguer")));
 
-        services.AddScoped<IMenuRepository, MenuRepository>();
+        services.AddMemoryCache();
+
+        services.AddScoped<IMenuRepository>(provider =>
+        {
+            var context = provider.GetService<ApplicationWriteDbContext>();
+            var cache = provider.GetService<IMemoryCache>();
+
+            return new CachingMenuRepository(
+                new MenuRepository(context),
+                cache);
+        });
         services.AddScoped<IOrderRepository, OrderRepository>();
 
         return services;
