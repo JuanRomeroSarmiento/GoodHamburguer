@@ -2,11 +2,11 @@
 
 namespace Web.Api.EndPoints.Orders;
 
-public sealed record PlaceOrderRequest(
+public sealed record CreateRequest(
     string? clientName, 
     IEnumerable<MenuItemRequest> menuItems);
 
-public sealed record UpdateOrderRequest(
+public sealed record UpdateRequest(
     Guid id,
     string? clientName,
     IEnumerable<MenuItemRequest> menuItems);

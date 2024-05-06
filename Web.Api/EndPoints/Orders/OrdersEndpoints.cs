@@ -18,29 +18,37 @@ public static class OrdersEndpoints
             .WithTags("Orders");
 
         group.MapGet("", GetAll)
+            .AddEndpointFilter<ValidationFilter<GetAllRequest>>()
             .WithName("GetAllOrders")
+            .WithOpenApi(generatedOperation =>
+            {
+                generatedOperation.Parameters[0].Description = "Only client Name can be used for filtering ";
+                generatedOperation.Parameters[1].Description = "Only 'clientName' and 'DateOfIssue' values allowed";
+                generatedOperation.Parameters[2].Description = "Only 'asc' and 'desc' values allowed";
+                return generatedOperation;
+            })
             .WithOpenApi(op => new(op)
             {
-                Description = "Operation to get all orders registered in the system " +
-                "paginated every 10 elements."
+                Description = "Operation to get all orders registered in the system in a paginated manner " +
+                              "with the option to filter by name of client sorted ascending and descending"
             });
 
         group.MapPost("", Create)
-            .AddEndpointFilter<ValidationFilter<PlaceOrderRequest>>()
+            .AddEndpointFilter<ValidationFilter<CreateRequest>>()
             .WithName("CreateOrder")
             .WithOpenApi(op => new(op)
             {
                 Description = "Operation to create a new order in the system." +
-                "Orders without items or with repeated items are not allowed."
+                              "Orders without items or with repeated items are not allowed."
             });
 
         group.MapPut("", Update)
-            .AddEndpointFilter<ValidationFilter<UpdateOrderRequest>>()
+            .AddEndpointFilter<ValidationFilter<UpdateRequest>>()
             .WithName("UpdateOrder")
             .WithOpenApi(op => new(op)
             {
                 Description = "Operation to update an existing order in the system." +
-                "Updates without items or with repeated items are not allowed."
+                              "Updates without items or with repeated items are not allowed."
             });
 
         group.MapDelete("{id}", Delete)
@@ -51,15 +59,23 @@ public static class OrdersEndpoints
             });
     }
 
-    public static async Task<Ok<OrdersResponse>> GetAll(ISender sender)
+    public static async Task<Ok<OrdersResponse>> GetAll(
+        [AsParameters] GetAllRequest request,
+        ISender sender)
     {
-        var query = new GetAllOrdersQuery();
+        var query = new GetAllOrdersQuery(
+            request.ClientNameSearchTerm, 
+            request.SortColumn, 
+            request.SortOrder, 
+            request.Page, 
+            request.PageSize);
+
         var orders = await sender.Send(query);
         return TypedResults.Ok(orders.Value);
     }
 
     public static async Task<Results<Ok<PlacedOrderCostResponse>, BadRequest<Error>>> Create(
-        PlaceOrderRequest request,
+        CreateRequest request,
         ISender sender)
     {
         var command = new PlaceOrderCommand(
@@ -80,7 +96,7 @@ public static class OrdersEndpoints
     }
 
     public static async Task<Results<Ok, BadRequest<Error>>> Update(
-        UpdateOrderRequest request,
+        UpdateRequest request,
         ISender sender)
     {
         var command = new UpdateOrderCommand(
